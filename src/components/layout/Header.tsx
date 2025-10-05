@@ -64,7 +64,7 @@ export default function Header({
     const label = segment
       .replace(/-/g, ' ')
       .replace(/\b\w/g, (l) => l.toUpperCase())
-    
+
     return { label, path, isLast: index === pathSegments.length - 1 }
   })
 
@@ -72,7 +72,6 @@ export default function Header({
     e.preventDefault()
     if (searchQuery.trim()) {
       // Implement search logic
-      console.log('Searching:', searchQuery)
     }
   }
 
@@ -87,7 +86,7 @@ export default function Header({
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
-            <Sidebar 
+            <Sidebar
               userRole={userRole}
               userName={userName}
               userEmail={userEmail}
@@ -103,14 +102,16 @@ export default function Header({
               <BreadcrumbItem>
                 <BreadcrumbLink href="/">Home</BreadcrumbLink>
               </BreadcrumbItem>
-              {breadcrumbs.map((crumb, index) => (
+              {breadcrumbs.map((crumb) => (
                 <div key={crumb.path} className="flex items-center gap-2">
                   <BreadcrumbSeparator />
                   <BreadcrumbItem>
                     {crumb.isLast ? (
                       <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink href={crumb.path}>{crumb.label}</BreadcrumbLink>
+                      <BreadcrumbLink href={crumb.path}>
+                        {crumb.label}
+                      </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
                 </div>
@@ -136,11 +137,7 @@ export default function Header({
         {/* Actions */}
         <div className="flex items-center gap-2">
           {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleTheme}
-          >
+          <Button variant="ghost" size="icon" onClick={onToggleTheme}>
             {isDarkMode ? (
               <Sun className="h-5 w-5" />
             ) : (
@@ -154,8 +151,8 @@ export default function Header({
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
                 {notifications > 0 && (
-                  <Badge 
-                    variant="destructive" 
+                  <Badge
+                    variant="destructive"
                     className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs"
                   >
                     {notifications > 99 ? '99+' : notifications}
@@ -174,14 +171,18 @@ export default function Header({
                       <p className="text-xs text-muted-foreground">
                         Kuis Praktikum ANC is now available
                       </p>
-                      <p className="text-xs text-muted-foreground">2 minutes ago</p>
+                      <p className="text-xs text-muted-foreground">
+                        2 minutes ago
+                      </p>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
                       <p className="text-sm font-medium">Schedule Updated</p>
                       <p className="text-xs text-muted-foreground">
                         Your lab schedule has been changed
                       </p>
-                      <p className="text-xs text-muted-foreground">1 hour ago</p>
+                      <p className="text-xs text-muted-foreground">
+                        1 hour ago
+                      </p>
                     </DropdownMenuItem>
                   </>
                 ) : (
@@ -193,7 +194,7 @@ export default function Header({
               {notifications > 0 && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem 
+                  <DropdownMenuItem
                     className="text-center text-sm text-primary cursor-pointer"
                     onClick={() => navigate('/notifications')}
                   >

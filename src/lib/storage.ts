@@ -2,10 +2,10 @@
 
 import { supabase } from './supabase'
 
-export type BucketName = 
-  | 'profile-pictures' 
-  | 'materi' 
-  | 'kuis-attachments' 
+export type BucketName =
+  | 'profile-pictures'
+  | 'materi'
+  | 'kuis-attachments'
   | 'documents'
 
 interface UploadOptions {
@@ -32,13 +32,13 @@ export class StorageService {
     file: File,
     options: UploadOptions
   ): Promise<{ url: string | null; error: string | null }> {
-    const { 
-      bucket, 
-      folder = '', 
+    const {
+      bucket,
+      folder = '',
       fileName,
       allowedTypes = [],
       maxSize = 5 * 1024 * 1024, // 5MB default
-      isPublic = false
+      isPublic = false,
     } = options
 
     try {
@@ -46,7 +46,7 @@ export class StorageService {
       if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
         return {
           url: null,
-          error: `File type not allowed. Allowed types: ${allowedTypes.join(', ')}`
+          error: `File type not allowed. Allowed types: ${allowedTypes.join(', ')}`,
         }
       }
 
@@ -54,14 +54,16 @@ export class StorageService {
       if (file.size > maxSize) {
         return {
           url: null,
-          error: `File size exceeds ${maxSize / (1024 * 1024)}MB limit`
+          error: `File size exceeds ${maxSize / (1024 * 1024)}MB limit`,
         }
       }
 
       // Generate unique filename
       const timestamp = Date.now()
       const extension = file.name.split('.').pop()
-      const finalFileName = fileName || `${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`
+      const finalFileName =
+        fileName ||
+        `${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`
       const filePath = folder ? `${folder}/${finalFileName}` : finalFileName
 
       // Upload to Supabase Storage
@@ -69,7 +71,7 @@ export class StorageService {
         .from(bucket)
         .upload(filePath, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: false,
         })
 
       if (error) {
@@ -96,7 +98,8 @@ export class StorageService {
 
       return { url: signedData.signedUrl, error: null }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
       return { url: null, error: errorMessage }
     }
   }
@@ -105,11 +108,13 @@ export class StorageService {
   static async uploadMultipleFiles(
     files: File[],
     options: UploadOptions
-  ): Promise<Array<{ file: string; url: string | null; error: string | null }>> {
-    const uploadPromises = files.map(file => 
-      this.uploadFile(file, options).then(result => ({
+  ): Promise<
+    Array<{ file: string; url: string | null; error: string | null }>
+  > {
+    const uploadPromises = files.map((file) =>
+      this.uploadFile(file, options).then((result) => ({
         file: file.name,
-        ...result
+        ...result,
       }))
     )
 
@@ -122,9 +127,7 @@ export class StorageService {
     filePath: string
   ): Promise<{ success: boolean; error: string | null }> {
     try {
-      const { error } = await supabase.storage
-        .from(bucket)
-        .remove([filePath])
+      const { error } = await supabase.storage.from(bucket).remove([filePath])
 
       if (error) {
         return { success: false, error: error.message }
@@ -132,7 +135,8 @@ export class StorageService {
 
       return { success: true, error: null }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
       return { success: false, error: errorMessage }
     }
   }
@@ -153,17 +157,20 @@ export class StorageService {
 
       return { blob: data, error: null }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
       return { blob: null, error: errorMessage }
     }
   }
 
   // Get file URL
-  static getFileUrl(bucket: BucketName, filePath: string, isPublic = false): string {
+  static getFileUrl(
+    bucket: BucketName,
+    filePath: string,
+    isPublic = false
+  ): string {
     if (isPublic) {
-      const { data } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(filePath)
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath)
       return data.publicUrl
     }
 
@@ -177,13 +184,11 @@ export class StorageService {
     folder: string
   ): Promise<{ files: FileListItem[]; error: string | null }> {
     try {
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .list(folder, {
-          limit: 100,
-          offset: 0,
-          sortBy: { column: 'created_at', order: 'desc' }
-        })
+      const { data, error } = await supabase.storage.from(bucket).list(folder, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'created_at', order: 'desc' },
+      })
 
       if (error) {
         return { files: [], error: error.message }
@@ -191,7 +196,8 @@ export class StorageService {
 
       return { files: (data as FileListItem[]) || [], error: null }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
       return { files: [], error: errorMessage }
     }
   }
@@ -213,7 +219,8 @@ export class StorageService {
 
       return { success: true, error: null }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred'
       return { success: false, error: errorMessage }
     }
   }
@@ -226,7 +233,7 @@ export const uploadProfilePicture = async (userId: string, file: File) => {
     folder: userId,
     allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
     maxSize: 2 * 1024 * 1024, // 2MB
-    isPublic: true
+    isPublic: true,
   })
 }
 
@@ -239,10 +246,10 @@ export const uploadMateri = async (mataKuliahId: string, file: File) => {
       'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     ],
     maxSize: 10 * 1024 * 1024, // 10MB
-    isPublic: false
+    isPublic: false,
   })
 }
 
@@ -252,6 +259,6 @@ export const uploadKuisAttachment = async (kuisId: string, file: File) => {
     folder: kuisId,
     allowedTypes: ['image/jpeg', 'image/png', 'application/pdf'],
     maxSize: 5 * 1024 * 1024, // 5MB
-    isPublic: false
+    isPublic: false,
   })
 }

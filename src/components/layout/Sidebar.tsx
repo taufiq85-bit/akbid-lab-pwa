@@ -86,19 +86,24 @@ interface SidebarProps {
   onLogout?: () => void
 }
 
-export default function Sidebar({ 
-  userRole, 
+export default function Sidebar({
+  userRole,
   userName = 'User',
   userEmail = 'user@example.com',
-  onLogout 
+  onLogout,
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-  
+
   const navItems = navigationItems[userRole] || []
 
   const isActive = (href: string) => {
-    if (href === '/admin' || href === '/dosen' || href === '/mahasiswa' || href === '/laboran') {
+    if (
+      href === '/admin' ||
+      href === '/dosen' ||
+      href === '/mahasiswa' ||
+      href === '/laboran'
+    ) {
       return location.pathname === href
     }
     return location.pathname.startsWith(href)
@@ -125,7 +130,11 @@ export default function Sidebar({
           onClick={() => setCollapsed(!collapsed)}
           className={cn(collapsed && 'mx-auto')}
         >
-          {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? (
+            <Menu className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
@@ -135,7 +144,7 @@ export default function Sidebar({
           {navItems.map((item) => {
             const Icon = item.icon
             const active = isActive(item.href)
-            
+
             return (
               <Link
                 key={item.href}
@@ -167,10 +176,12 @@ export default function Sidebar({
 
       {/* Footer - User Info */}
       <div className="absolute bottom-0 left-0 right-0 border-t bg-background">
-        <div className={cn(
-          'flex items-center gap-3 p-4',
-          collapsed && 'justify-center'
-        )}>
+        <div
+          className={cn(
+            'flex items-center gap-3 p-4',
+            collapsed && 'justify-center'
+          )}
+        >
           {collapsed ? (
             <Button
               variant="ghost"
@@ -187,7 +198,9 @@ export default function Sidebar({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{userName}</p>
-                <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {userEmail}
+                </p>
               </div>
               <Button
                 variant="ghost"

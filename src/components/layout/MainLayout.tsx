@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
-import { cn } from '@/lib/utils'
 import type { RoleCode } from '@/types/auth'
 
 interface MainLayoutProps {
@@ -23,8 +22,10 @@ export default function MainLayout({
   useEffect(() => {
     // Check for saved theme preference
     const savedTheme = localStorage.getItem('theme')
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
+    const prefersDark = window.matchMedia(
+      '(prefers-color-scheme: dark)'
+    ).matches
+
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
       setIsDarkMode(true)
       document.documentElement.classList.add('dark')
@@ -34,7 +35,7 @@ export default function MainLayout({
   const handleToggleTheme = () => {
     const newTheme = !isDarkMode
     setIsDarkMode(newTheme)
-    
+
     if (newTheme) {
       document.documentElement.classList.add('dark')
       localStorage.setItem('theme', 'dark')
@@ -46,7 +47,6 @@ export default function MainLayout({
 
   const handleLogout = () => {
     // Implement logout logic
-    console.log('Logging out...')
     // Clear auth data and redirect to login
   }
 

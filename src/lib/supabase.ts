@@ -35,13 +35,12 @@ export const checkSupabaseConnection = async () => {
       .from('system_settings')
       .select('setting_key')
       .limit(1)
-    
+
     if (error) {
       console.error('Supabase connection error:', error)
       return false
     }
-    
-    console.log('Supabase connected successfully')
+
     return true
   } catch (error) {
     console.error('Failed to connect to Supabase:', error)

@@ -1,5 +1,12 @@
 // src/types/common.ts
 
+// 👇 1. Impor tipe Database Anda (pastikan path './database' sudah benar)
+import type { Database } from './database'
+
+// 👇 2. Buat tipe turunan untuk jenis notifikasi dari skema database
+type NotificationType =
+  Database['public']['Tables']['notifications']['Row']['type']
+
 export interface SelectOption {
   value: string
   label: string
@@ -29,7 +36,8 @@ export interface Notification {
   id: string
   title: string
   message: string
-  type: 'info' | 'success' | 'warning' | 'error'
+  // 👇 3. Ganti tipe lama dengan tipe turunan yang baru
+  type: NotificationType
   read: boolean
   createdAt: string
 }
@@ -40,7 +48,7 @@ export interface TableColumn<T> {
   sortable?: boolean
   width?: string
   align?: 'left' | 'center' | 'right'
-  render?: (value: unknown, row: T, index: number) => React.ReactNode  // Changed from any to unknown
+  render?: (value: unknown, row: T, index: number) => React.ReactNode
 }
 
 export interface FormState {

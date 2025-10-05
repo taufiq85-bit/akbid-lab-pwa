@@ -1,6 +1,7 @@
 // src/types/api.ts
 
-export interface ApiResponse<T = unknown> {  // Changed from any to unknown
+export interface ApiResponse<T = unknown> {
+  // Changed from any to unknown
   data?: T
   error?: ApiError
   message?: string
@@ -11,7 +12,7 @@ export interface ApiResponse<T = unknown> {  // Changed from any to unknown
 export interface ApiError {
   code: string
   message: string
-  details?: unknown  // Changed from any to unknown
+  details?: unknown // Changed from any to unknown
 }
 
 export interface PaginationParams {
@@ -41,7 +42,7 @@ export interface QueryOptions {
 }
 
 export interface MutationOptions {
-  onSuccess?: (data: unknown) => void  // Changed from any to unknown
-  onError?: (error: unknown) => void   // Changed from any to unknown
+  onSuccess?: (data: unknown) => void // Changed from any to unknown
+  onError?: (error: unknown) => void // Changed from any to unknown
   onSettled?: () => void
 }
